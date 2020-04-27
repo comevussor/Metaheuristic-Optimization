@@ -1,4 +1,36 @@
-[Heading](#heading-2)
+- [Metaheuristic-Optimization](#metaheuristic-optimization)
+- [Travelling Salesman Problem (TSP) with `n = 38` cities in Djibouti (pyhton code see `TSP38.py`and its dependency `TSP_util.py`)](#travelling-salesman-problem--tsp--with--n---38--cities-in-djibouti--pyhton-code-see--tsp38py-and-its-dependency--tsp-utilpy--)
+  * [Implementation of a genetic algorithm on TSP problem for Djibouti `n=38` (target is `6,656`)](#implementation-of-a-genetic-algorithm-on-tsp-problem-for-djibouti--n-38---target-is--6-656--)
+    + [Improvement tries](#improvement-tries)
+  * [Implementation of closest neighbour algorithm on TSP problem for Djibouti `n=38` (target is `6,656`)](#implementation-of-closest-neighbour-algorithm-on-tsp-problem-for-djibouti--n-38---target-is--6-656--)
+- [Travelling Salesman Problem (TSP) with `n = 194` cities in Quatar (pyhton code see `TSP194.py`and its dependency `TSP_util.py`)](#travelling-salesman-problem--tsp--with--n---194--cities-in-quatar--pyhton-code-see--tsp194py-and-its-dependency--tsp-utilpy--)
+  * [Implementation of a genetic algorithm on TSP problem for Quatar `n=194` (target is `9,352`)](#implementation-of-a-genetic-algorithm-on-tsp-problem-for-quatar--n-194---target-is--9-352--)
+  * [Implementation of closest neighbour algorithm on TSP problem for Quatar](#implementation-of-closest-neighbour-algorithm-on-tsp-problem-for-quatar)
+- [Conclusion regarding TSP problem with genetic algorithm and best neighbour](#conclusion-regarding-tsp-problem-with-genetic-algorithm-and-best-neighbour)
+- [Optimize shifted sphere function in dimension `d = 50` and `d = 500`](#optimize-shifted-sphere-function-in-dimension--d---50--and--d---500-)
+  * [Gradient descent algorithm for unknown shift](#gradient-descent-algorithm-for-unknown-shift)
+  * [Particle sworm optimization](#particle-sworm-optimization)
+  * [Conclusion regarding shifted sphere with gradient descent and particle sworm.](#conclusion-regarding-shifted-sphere-with-gradient-descent-and-particle-sworm)
+- [Optimize shifted Schwefel's problem 2.21 in dimension `d = 50` and `d = 500`](#optimize-shifted-schwefel-s-problem-221-in-dimension--d---50--and--d---500-)
+  * [Gradient descent algorithm for unknown shift](#gradient-descent-algorithm-for-unknown-shift-1)
+  * [Particle sworm optimization](#particle-sworm-optimization-1)
+  * [Conclusion regarding shifted Schefel's problem with gradient descent and particle sworm.](#conclusion-regarding-shifted-schefel-s-problem-with-gradient-descent-and-particle-sworm)
+- [Optimize shifted Rosenbrock's function with simulated annealing coupled with gradient method](#optimize-shifted-rosenbrock-s-function-with-simulated-annealing-coupled-with-gradient-method)
+- [Optimize shifted Rastrigin's function with simulated annealing algorithm, coupled with gradient local search](#optimize-shifted-rastrigin-s-function-with-simulated-annealing-algorithm--coupled-with-gradient-local-search)
+  * [First tests on random data in dimension `50`](#first-tests-on-random-data-in-dimension--50-)
+  * [Improve algorithm efficiency (still on random data) in dimension `50`](#improve-algorithm-efficiency--still-on-random-data--in-dimension--50-)
+  * [Implement with real data in dimension `50`](#implement-with-real-data-in-dimension--50-)
+  * [Extend the method to dimension `500`](#extend-the-method-to-dimension--500-)
+    + [test barycentric approach in dimension `50`](#test-barycentric-approach-in-dimension--50-)
+    + [test barycentric approach in dimension `500`](#test-barycentric-approach-in-dimension--500-)
+    + [implementation with real data](#implementation-with-real-data)
+  * [Comparison between dimension `50` and dimension `500`](#comparison-between-dimension--50--and-dimension--500-)
+- [Optimize shifted Griewank’s Function in dimension `50` and `500`](#optimize-shifted-griewank-s-function-in-dimension--50--and--500-)
+  * [Optimize shifted Griewank’s Function in dimension `50` with gradient descent](#optimize-shifted-griewank-s-function-in-dimension--50--with-gradient-descent)
+  * [Optimize shifted Griewank’s Function in dimension `500` with gradient descent](#optimize-shifted-griewank-s-function-in-dimension--500--with-gradient-descent)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 
 # Metaheuristic-Optimization
 8 problems to optimize
