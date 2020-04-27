@@ -1,3 +1,5 @@
+[Heading](#heading-2)
+
 # Metaheuristic-Optimization
 8 problems to optimize
 Using Python 3.6 with Numpy 1.17, Scipy 1.4.1, psopy 0.2.3.
@@ -186,19 +188,227 @@ Possible improvements : I could not go further by lack of time but it could be i
 
 # Optimize shifted Rastrigin's function with simulated annealing algorithm, coupled with gradient local search
 
+## First tests on random data in dimension `50`
+
 In dimension `50`, we start with random shifts to test different methods. We perform `100` runs of simulated annealing limited to `3.10^6` iterations, with initial step set at `1` and final step set at `5.10^-3` (we start with a global search and finish with a local search). We set `accept = 1` which means, according the function range, that we refuse almost any increase at the beginning and start tolerating increase much later, when step is way smaller. We get a cloud of points that we expect to be around the global minimum. Each run takes `2 min` on my computer. And we get minimum energy list :  
-`[-120.16358571496738, -75.78344978772745, -69.05819743302106, -120.51101265994541, 15.850243165490951, -66.2992038050138, -118.76359419663757, -196.9227649160092, -131.98193670417604, -165.69228836145305, -80.01258139949391, -45.684349457413475, -113.26725434161136, -156.24593316589466, -138.37596488237168, -41.49974079854729, -50.842659537165446, 7.122330650211495, 1.1982858400099303, -94.64811150435241, -107.60280654777571, -15.652510824884416, -166.83432190723494, -101.86074842343703, -166.92730272418243, 54.95834131861625, -28.43493516330659, -105.26553842527272, -96.38425801314699, -81.73791181375472, 22.26141285574232, -146.21819635682647, -100.01965261103479, 22.856666260565703, -64.56363810803634, -83.4438617672198, -149.91873449004484, -100.85564763041052, -181.40944279330145, -84.4457826693125, -74.09627923528424, -85.22071155078743, 149.07260173404165, -110.05082606144359, -179.80777710804023, -33.798410152110876, -137.3686507818592, -74.42454348687983, -141.30564747871747, -173.04640296607565, -25.289247632869035, -129.9339705162757, -152.95586834673563, -79.80685419052338, -20.453974745029598, -98.0886910321504, -147.5991437466542, -105.51708167147859, -111.81866710129668, 36.63819941093897, -55.43472810316973, 67.61374900652487, -100.61266339572802, -133.81846229318103, -66.75620385748891, -49.63335141600646, 59.5390907990888, -127.46016953424524, -115.85399817147305, -163.61966908437023, -175.7117622454923, -142.53627718664282, -44.98603143687046, -81.39388816472459, -148.84293506098905, 49.27503594444988, -44.354321588862604, -87.50630063035277, -109.39516178315787, -47.13262868381497, -112.19242423930436, 90.72192121182047, -103.78234078929322, -108.54196427394425, 124.234008601776, 95.2554398286054, -182.88180737802725, -112.45037145686592, -133.7115663824237, -152.3316942271468, -77.95316528692845, -104.54069275913022, -84.5147276219354, -33.4770048346881, 73.33170536218938, -108.88016222049274, -195.92109914378713, -206.1068712304754, -104.38088817832252, -65.47622972697161]`
+```
+[-120.16358571496738, -75.78344978772745, -69.05819743302106, -120.51101265994541, 15.850243165490951, -66.2992038050138, -118.76359419663757, -196.9227649160092, -131.98193670417604, -165.69228836145305, -80.01258139949391, -45.684349457413475, -113.26725434161136, -156.24593316589466, -138.37596488237168, -41.49974079854729, -50.842659537165446, 7.122330650211495, 1.1982858400099303, -94.64811150435241, -107.60280654777571, -15.652510824884416, -166.83432190723494, -101.86074842343703, -166.92730272418243, 54.95834131861625, -28.43493516330659, -105.26553842527272, -96.38425801314699, -81.73791181375472, 22.26141285574232, -146.21819635682647, -100.01965261103479, 22.856666260565703, -64.56363810803634, -83.4438617672198, -149.91873449004484, -100.85564763041052, -181.40944279330145, -84.4457826693125, -74.09627923528424, -85.22071155078743, 149.07260173404165, -110.05082606144359, -179.80777710804023, -33.798410152110876, -137.3686507818592, -74.42454348687983, -141.30564747871747, -173.04640296607565, -25.289247632869035, -129.9339705162757, -152.95586834673563, -79.80685419052338, -20.453974745029598, -98.0886910321504, -147.5991437466542, -105.51708167147859, -111.81866710129668, 36.63819941093897, -55.43472810316973, 67.61374900652487, -100.61266339572802, -133.81846229318103, -66.75620385748891, -49.63335141600646, 59.5390907990888, -127.46016953424524, -115.85399817147305, -163.61966908437023, -175.7117622454923, -142.53627718664282, -44.98603143687046, -81.39388816472459, -148.84293506098905, 49.27503594444988, -44.354321588862604, -87.50630063035277, -109.39516178315787, -47.13262868381497, -112.19242423930436, 90.72192121182047, -103.78234078929322, -108.54196427394425, 124.234008601776, 95.2554398286054, -182.88180737802725, -112.45037145686592, -133.7115663824237, -152.3316942271468, -77.95316528692845, -104.54069275913022, -84.5147276219354, -33.4770048346881, 73.33170536218938, -108.88016222049274, -195.92109914378713, -206.1068712304754, -104.38088817832252, -65.47622972697161]
+```
 
 We run the gradient algorithm on each one of the corresponding best found state. The best result yields a fitness of `-213` to be compared with the target at `-330`. Each run take `2 sec`.  
 We try to improve this result performing the gradient descent on the barycentre of the 100 points previously found. And indeed, we find a fitness at `-264` which is much better.  
 Now we try to make a local search in the area of the cloud found thanks to simulated annealing + gradient method. We take random points computed as a weighted sum of the points in the cloud. We limit the weights to be mainly positive to stay in the area of the cloud. We take random weights ranging from `-0.7` to `1`. We choose `100` random points `400` times and we perform gradient method on each one of these `40,000` points. Fitness comes to `-289` within `1,500` seconds.  
 Now, we use directly the points from simulated annealing without gradient descent and use the same system of random weighted points, an identical number of times (`40,000`), fitness comes to `-290`, meaning that gradient optimization on the cloud given by simulated annealing is useless.
 
-As a preliminary conclusion, this method sounds interesting but 
+As a preliminary conclusion, this method sounds interesting but our algorithm is not optimized at all and considering our machine abilities, we have to improve efficiency if we want to get a chance to optimize the function in dimension `500`.
+
+## Improve algorithm efficiency (still on random data) in dimension `50`
+
+First of all, we want to take advantage of numpy optimization (contiguous storage) working on arrays as much as possible. We work with batches of points to evaluate the Rastrigin function, to perform gradient descent and simulated annealing. Moreover, instead of calling the random generator each time we need a random vector, we compute a batch of random vectors in advance and we read it sequentially. Based on previous runs, we also try to improve simulated annealing parameters : we give more space for diversity, ranging steps from `1.5` to `10^-2`. And eventually, we parallelize computation.
+
+Note that we have also modified simulated annealing acceptance probability function : it is now `exp(- accept * (variation of energy))`. It is closer to the original Kirkpatrick's algorithm but as if temperature was constant. We have worked on that side because the variations of Rastrigin function has a very broad range, often leading to extreme acceptance (all or nothing). We adjust the acceptance parameter according to the final variations : we expect the function to vary by a few units by the end of the process. If we choose `accept = 0.3`, we get a probability function around `exp(-0.3*2) = 0.5 approx` which is appropriate.
+
+With these improvements, we can perform simulated annealing of length `10^6` from `100` initial points simultaneously, distributed among `all-1 = 11 cores` on my computer within around `350 sec (5 to 6 min)` to be compared with `200 min` previously. And as a bonus, we get much better results before gradient descent : 
+(note that it seems impossible to ensure reproducibility, probably due to parallelization)
+```
+[[-234.68756923 -227.64604969 -229.89489208 -198.64195857 -207.00626779
+  -221.68101912 -197.18636792 -202.67040799 -229.34420727 -214.28598939]
+ [-208.8472549  -215.98526897 -208.53485224 -199.30800331 -216.13100038
+  -211.50693429 -217.08257198 -245.37630407 -254.43046222 -227.32373786]
+ [-214.33852953 -209.65050322 -206.18389261 -218.2307218  -224.44798904
+  -222.70232706 -234.28046813 -204.50327039 -181.3382825  -207.75945968]
+ [-219.64847949 -179.337407   -203.94741943 -226.829812   -229.20923679
+  -201.81425655 -221.72336209 -214.87371576 -224.02556841 -222.89603934]
+ [-201.46615175 -221.99042672 -202.35988258 -212.59395544 -211.79263127
+  -235.76358081 -206.08363067 -219.2647507  -193.20205265 -210.29579017]
+ [-237.72700204 -217.28835296 -224.45998297 -241.00637057 -228.5609258
+  -197.33895052 -215.99739401 -219.77214566 -239.00494049 -228.50175284]
+ [-215.51338781 -226.23877563 -219.61748269 -181.43560892 -217.27726226
+  -214.17499908 -209.14571062 -234.08491563 -227.83386023 -176.4791964 ]
+ [-213.83139704 -221.8446324  -232.0801542  -201.17864226 -208.46829974
+  -229.76099714 -225.84126761 -206.9675312  -200.56586526 -204.21920663]
+ [-208.87937635 -212.41861397 -210.04535944 -209.55789026 -242.99497191
+  -222.52313874 -215.78539701 -187.0668032  -206.19642008 -222.42306892]
+ [-208.67915872 -206.21952221 -220.73134742 -232.98655841 -209.52897475
+  -211.36964271 -210.13771285 -235.16943446 -182.71139556 -218.24992282]]
+```
+
+After gradient descent on each point (computation takes less than `1 sec` once parallelized), we get :
+```
+[[-277.26233205 -265.32283492 -266.31979953 -232.49398518 -242.43868691
+  -255.36546862 -246.41005167 -243.43273271 -269.30401957 -255.37647478]
+ [-240.43825119 -250.40215157 -252.38855332 -240.44890176 -253.38483461
+  -256.35442112 -253.38825606 -280.23719313 -283.22564054 -267.31618709]
+ [-249.39907914 -252.38508031 -240.45218005 -260.33951598 -271.29554023
+  -258.3444906  -274.2775367  -238.46385874 -225.52343776 -248.39999773]
+ [-266.31948181 -220.54666378 -239.45598341 -263.33271752 -263.33666722
+  -239.45760486 -264.32717782 -254.37671229 -257.35575672 -272.28629038]
+ [-239.99750611 -255.37583833 -238.45464185 -253.38316509 -252.39329074
+  -272.28762161 -246.42351887 -260.35033308 -223.53459324 -247.41848513]
+ [-272.28781236 -252.3896226  -262.33681854 -279.2520231  -266.31836487
+  -240.44723534 -256.37184701 -255.36640872 -274.26374461 -270.28651855]
+ [-252.39297592 -261.34293237 -266.31958989 -219.55251271 -261.34688476
+  -243.42539968 -253.38648915 -276.26403173 -271.29488971 -220.55260689]
+ [-251.39638704 -261.3405658  -270.29743837 -237.46642624 -252.39306644
+  -269.3072664  -254.37735868 -248.4062254  -237.46812556 -250.39822038]
+ [-243.43367733 -253.38344701 -254.37984894 -246.42319359 -284.22221142
+  -261.88658166 -254.37053459 -228.49700139 -250.39867771 -269.30236649]
+ [-246.42115688 -246.4232485  -258.36055456 -272.2849173  -254.37623673
+  -248.41101043 -244.43268551 -278.25602937 -223.53922452 -256.36810194]]
+  ``` 
+Best fitness is now around `-280`, comparable with `-264` previously. But the other good point is that the cloud of points we get is much more homogeneous than before, probably due to better parametrization of simulated annealing.
+
+We now try a gradient on each isobarycenter of each sample of 10 points. Again we get very homogeneous results :
+```
+[-311.08117533, -315.0748219 , -309.10245315, -317.0562309 ,
+       -314.0797713 , -314.07849263, -310.09575191, -313.07342075,
+       -311.07938521, -314.07929953]
+```
+The minimum value is now around `-315` for a target at `-330` to be compared with `-290` previously and that is achieved with much less computation.
+
+## Implement with real data in dimension `50`
+
+Finally, we decide to adopt the following process :
+a) run simulated annealing on `50 samples of 10 initial points (10^6 iterations each) with 12 cores in parallel`.
+b) run gradient descent on each one of the `500` best points found.
+c) take the `50` isobarycenters of the `50` samples of obtained points.
+
+a) takes around `30 min`. Best fitness is around `-260`.
+b) takes `20 sec`. Best fitness is approximately `-290`.
+c) takes a few secs. best fitness is approximately `-315`.
+
+This result is reasonable considering the machine we are using but it still looks difficult to extend it in dimention `500`.
+
+## Extend the method to dimension `500`
+
+Considering the huge effect of dimensionality on our previous method, we need to change the approach. Simulated annealing seems interesting but the fact that our `500` wandering points are completely independent considerably slows down the process. In order to introduce interdepence between the points so that they can help each other, we could use PSO algorithm but it gets stuck easily in local minima and we need more diversification. 
+
+For these reasons, we would like to introduce a new process based on bayrcentric approach. We keep using the annealing idea but let us say that we cool down a gas of thousands of particles taking into account attraction/repulsion effects. At each step, for each point `P_0`, we perform the following operations :
+- pick a random set of `neighbours` points different from `P_0` : `P_1, ..., P_neighbours`
+- pick a set of `neighbours + 1 ` weights according to the following rule :
+  * `w_0` weight of `P_0` is user defined, call it `min_main_weight` . It is set to ensure that we somehow stay in the neighbourhood of `P_0` (in our case, we choose `0.9`).
+  * all weights should sum to `1` but we want to allow negative weights so we proceed in 2 steps according to a user defined parameter calle `neg_margin`:
+    + 1st step is iterative
+    `w_1` is a random (uniform law) weight in the interval `[ 0, 1 + 2 * neg_margin - w_0 ]`
+    `w_2` is a random (uniform law) weight in the interval `[ 0, 1 + 2 * neg_margin - w_0 - w_1 ]`
+    `w_neighbours` is a random (uniform law) weight in the interval `[ 0, 1 + 2 * neg_margin - w_0 - w_1 - ... - w_(neighbours-1) ]`
+    + 2nd step is a phase of adjustment
+    Let `i` be the smallest index so that `w_0 + ... + w_1 > 1 + neg_margin`
+    Set all weights of index greater than 1 to be negative.
+    Adjust `w_i` so that all weights sum to 1.
+- compute `P'_0` to be the barycentre of `P_0, ..., P_neighbours` with weights `w_0, ..., w_neighbours`
+- `P'_0` is accepted of rejected with the same acceptance rules as in simulated annealing
+
+### test barycentric approach in dimension `50`
+We test our new method on random data in dimension `50` : 
+- gas has `cloud_size = 5,000` particles to ensure diversity
+- `max_run = 2,000` : since our process is computationally demanding, we want it to converge very fast or it is garbage
+- `accept=0.1` : considering the reduced number of steps, we don't think it will be efficient to scale acceptance according to iterations count, moreover we expect the cloud to shrink and by barycentration, steps will shrink too. We choose a "middle way" between `1.5` and `10**-2` we had before. 
+- `min_main_weight = 0.9`, `neighbours=10` and `neg_margin=0.5` : these parameters are chosen so that the neighbours'weights are way smaller than `min_main_weight` (to keep diversity as long as possible) and so that the final adjustment of weights does not have (on average...) a major impact on `w_i` .
+
+Runing the algorithm takes around `400 sec` on our computer and best final fit is around `-300` but after gradient descent on all `5,000` best points, we get a best fit around `-320` to be compared with the target `-330`. We can slightly improve this result by barycentration on best points. But what is really more important is that we have divided processing time by `10` with results similar to simple simulated annealing method and without parallelizing...
+
+### test barycentric approach in dimension `500`
+- gas has `cloud_size=50,000` particles as a tradeoff between diversity and computation capacity... Still it will be sparser than in dimension `50`.
+- `max_run = 2,000` this parameter has to be increased so that particles can move in more directions (dimensionality issue)
+- `accept=0.1` this value is on the fitness function and does not change much with dimensionality
+- `min_main_weight = 0.9`, `neighbours=15` and `neg_margin=0.8` : We increase the number of neighbours to get more chances to test barycentration with all particles of the gas. We increase the negative margin because it is more difficult to explore out of the convex hull when the number of particles is big. 
+
+With these parameters, computation takes `2 hours`, we get a best final fitness around `0` that can be decreased down to `-100` thanks to barycentration. Considering our computer's power, we take this as a good result.
+
+### implementation with real data
+To implement the procedure with real data, we parallelize the algorithm :
+We run `5 threads` in parallel, each one handles `50,000 points`. They run `50 iterations` in parallel after which the `250,000` points are reshuffled and again divided into `5 threads`. We proceed to `20 reshuffling`. As a result, the gas of `250,000 points` is moving by only `1,000 steps`. Indeed, on preliminary trials, we observed a very fast convergence of the cloud and going further leads to a big loss in diversity. Regarding parameters, we keep previous parameters that proved to be very efficient.
+
+Running the algorithm takes around `4,000 sec` and we observe the best fit at each reshuffling :
+
+```
+8224.000546831263
+7779.056951473989
+7491.566042214355
+6292.424706570562
+4345.641330468526
+4064.237600988399
+3959.0807908439783
+3895.5360381051796
+3800.3369723341875
+3706.294926376571
+3674.257215565347
+3628.385904057478
+3604.114899732278
+3570.343456305375
+3483.7688624973907
+3411.2526402933145
+3343.4136194135153
+3202.746405318051
+3074.5183153482617
+2772.9842828384635
+```
+
+We observe a first period of fast convergence followed by a plateau around `3,600` and again an accelerating convergence.
+
+Unfortunately a gradient descent on the `250,000 best points` is too costly. So we take a random sample of `5,000` to perform the gradient descent. On high dimensions, the gradient values may have a very wide range and it creates a risk of failure. We use a small `ro=0.005` (learning rate) and additionnaly clip any move in any direction in `[-0.2, 0.2]`. We run the algorithm in `5 parallel threads`. It takes `350 sec` to run. We see a good diversity of final fitness with a best one around `-230`.
+
+We also try to take barycentres of 5 randomly chosen points in the gas. With `5,000 barycentres`, it takes more or less the same time to run (`350 sec`) for a similar best fitness. Both approaches appear to be receivable. 
+
+## Comparison between dimension `50` and dimension `500`
+
+In dimension `50`:
+We have used classic simulated annealing followed by gradient descent :
+simulated annealing takes `500,000,000 evaluations`
+gradient descent (including gradient approximation computation) takes :
+`550 points * 500 iterations * (1 + 50*2 for gradient) approx 28,000,000 evaluations` which is negligible compared with simulated annealing.
+The whole thing takes around `30 minutes` to run.
+
+In dimension `500`:
+We have used a home made barycentric simulated annealing followed by gradient descent :
+simulated annealing takes `250,000,000 evaluations`
+gradient descents (including gradient approximation) takes :
+`10,000 points * 20 iterations * (1 + 500*2 for gradient) approx 200,000,000 evaluations` which is of the same order as the simulated annealing.
+The whole thing takes around `80 minutes` to run.
+
+Keeping in mind that the performance in dimension `500` is not as good as dimension `50` it seems that barycentric approach is quite efficient. In any case, we could not find proper parameters for classic annealing leading to comparable results in a reasonable time.
+
+# Optimize shifted Griewank’s Function in dimension `50` and `500`
+
+I have read somewhere that Griewank's function is easier to optimize in high dimension. Based on that assumption, I use a very simple version of a generalized gradient descent algorithm. In a first computation, I implement a descent on cloud of points based on a gradient estimated with a very big step (`+/-5 on each coordinate`) and huge `ro` value, with almost no limitation on the size of the move. That way, I capture a global tendency of the function. Once this cloud is stabilized, I implement a classical approximated gradient descent on the barycentre of the cloud.
+
+## Optimize shifted Griewank’s Function in dimension `50` with gradient descent
+
+1st step :
+- `cloud_size = 300`, it is a bit pessimistic but in dimension `50`, this precaution will not cost much.
+- `eps = 5` is the size of the step to estimate the "gradient" (in this case, we call it a gradient because of the method but, of course, it has nothing to do with a mathematical gradient)
+- `ro = 100` is the learning rate (`move = - ro * gradient`), it is set very high to move as fast as possible but still limitated by a `max_step = 30` (limitation is in euclidian norm value)
+- initial cloud is chosen randomly
+
+Computation takes `12 sec` and final value for the target function is around `-178` all accross the cloud, to be compared with the target value = `-180`.
+
+2nd step :
+- `eps = 0.01` : as small as possible but avoiding machine limitations effects
+- `ro = 1` : we don't know the gradient's value but we keep a constraint of `max_step = 1` (euclidian norm on the move, respected by scaling)
+- `max_run = 500` : as we have very small steps, we need to have a lot of steps to compensate (but it's ok since we are working with one only point)
+
+Computation is very fast and final fitess is `-180`, the target value.
+Indeed, we can check that the final point is the real target point : euclidian norm of the difference is `10^-6`.
 
 
+## Optimize shifted Griewank’s Function in dimension `500` with gradient descent
 
+1st step :
+- `cloud_size = 200`, it is a bit optimistic compared to previous case but in dimension `500`, computation is costly.
+- `eps = 5` same reasoning as before
+- `ro = 1000` limitated by a `max_step = 300`
 
+Computation takes around `200 sec` and final values of the function are more heterogeneous, around `-175`.
+We are less optimistic than before due to dimensionality and we take the barycentre only on the best `100` points.
+
+2nd step :
+- `eps = 0.01` : as small as possible but avoiding machine limitations effects
+- `ro = 1` : we don't know the gradient's value but we keep a constraint of `max_step = 1` (euclidian norm on the move, respected by scaling)
+- `max_run = 500` : as we have very small steps, we need to have a lot of steps to compensate (but it's ok since we are working with one only point)
+
+Computation takes `2 sec` and final fitess is `-179.99999948`, the target value being `-180`...
+Indeed, we can check that the final point is the real target point : euclidian norm of the difference is around `0.01`.
 
 
 
