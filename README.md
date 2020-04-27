@@ -1,3 +1,8 @@
+# Metaheuristic-Optimization
+8 problems to optimize with Python
+
+[open this file](TSP194.py)
+
 - [Metaheuristic-Optimization](#metaheuristic-optimization)
 - [Travelling Salesman Problem (TSP) with `n = 38` cities in Djibouti (pyhton code see `TSP38.py`and its dependency `TSP_util.py`)](#travelling-salesman-problem--tsp--with--n---38--cities-in-djibouti--pyhton-code-see--tsp38py-and-its-dependency--tsp-utilpy--)
   * [Implementation of a genetic algorithm on TSP problem for Djibouti `n=38` (target is `6,656`)](#implementation-of-a-genetic-algorithm-on-tsp-problem-for-djibouti--n-38---target-is--6-656--)
@@ -32,9 +37,6 @@
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
 
-# Metaheuristic-Optimization
-8 problems to optimize
-Using Python 3.6 with Numpy 1.17, Scipy 1.4.1, psopy 0.2.3.
 
 # Travelling Salesman Problem (TSP) with `n = 38` cities in Djibouti (pyhton code see `TSP38.py`and its dependency `TSP_util.py`)
 
