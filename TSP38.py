@@ -1,35 +1,43 @@
-# load tools
+#****************
+# TSP DJIBOUTI  *
+#****************
+print("TSP38")
+
+# load librarys
 import random
 import numpy as np
 from TSP_util import *
+from matplotlib import pyplot as plt
+import time
 
 # reproducibility
 random.seed(1203)
 # random.seed(1815)
 
-#****************
-# TSP DJIBOUTI  *
-#****************
-
 # load raw data
-djib = np.loadtxt("http://www.math.uwaterloo.ca/tsp/world/dj38.tsp", delimiter=" ", skiprows=10)
-djib = djib[:, 1:3]
-print(djib)
-n = len(djib)
+djib = np.loadtxt( "http://www.math.uwaterloo.ca/tsp/world/dj38.tsp", 
+                  delimiter=" ", skiprows=10 )
+djib = djib[ :, 1:3 ]
+n = len( djib )
 
-# indices = np.arange(38)
-# np.random.shuffle(indices)
-# djib = djib[indices]
-
-# create problem
+# create model
 myTSP = TSP2(djib)
 
-# check rough global bounds
+# compute distances and visualize distances distribution
 D = myTSP.matrix_of_distances
-print(np.sort(38*D, axis = None)[36:])
+myDist = np.sort( D, axis = None)[ n::2 ]
 
-# scale roulette exponential weighting (see RouletteWheelSelection)
+myHist = plt.hist( myDist, density=True)
+plt.title(label = 'Distribution of city distances TSP 38')
+plt.show()
 
+#******************************************************************
+#**************************GENETIC ALGORITHM***********************
+#******************************************************************
+
+print("\n Genetic Algorithm")
+
+print("\n - using Hui's parameters with inverse proportional density for selection")
 # first try with Hui parameters except population because of computation limitation
 tryTSP(myTSP, 1000, 1000, 
        PermutationSwapMutation(0.01, randMut=1), 
@@ -37,6 +45,7 @@ tryTSP(myTSP, 1000, 1000,
        RouletteWheelSelection(beta = 0), 
        StoppingByEvaluations(max_evaluations=20000))
 
+print("\n - with exponential density for selection")
 # beta = 0.001 => exponentional density for selection
 tryTSP(myTSP, 1000, 1000, 
        PermutationSwapMutation(0.01, randMut=1), 
@@ -44,6 +53,7 @@ tryTSP(myTSP, 1000, 1000,
        RouletteWheelSelection(beta = 0.001), 
        StoppingByEvaluations(max_evaluations=20000))
 
+print("\n - with optimal mutation and inverse proportional density for selection")
 # randMut = 2 => optimal mutation
 tryTSP(myTSP, 1000, 1000, 
        PermutationSwapMutation(0.01, randMut=2, D=D, n=n, first=False), 
@@ -51,6 +61,7 @@ tryTSP(myTSP, 1000, 1000,
        RouletteWheelSelection(beta = 0), 
        StoppingByEvaluations(max_evaluations=20000))
 
+print("\n - with optimal mutation and inverse exponential density for selection")
 # beta=0.001 => exponentional density for selection
 tryTSP(myTSP, 1000, 1000, 
        PermutationSwapMutation(0.01, randMut=2, D=D, n=n, first=False), 
@@ -58,51 +69,55 @@ tryTSP(myTSP, 1000, 1000,
        RouletteWheelSelection(beta = 0), 
        StoppingByEvaluations(max_evaluations=20000))
 
-# reduce population and increase iterations
+
+print("\n - reduce population and increase iterations")
 tryTSP(myTSP, 100, 100, 
        PermutationSwapMutation(0.01, randMut=2, D=D, n=n, first=False), 
        PMXCrossover(0.3), 
        RouletteWheelSelection(beta = 0), 
        StoppingByEvaluations(max_evaluations=100000))
 
-tryTSP(myTSP, 100, 100, 
-                  PermutationSwapMutation(0.5, randMut=2, D=D, n=n, first=False), 
-                  PMXCrossover(0.3), 
-                  RouletteWheelSelection(beta = 0), 
-                  StoppingByEvaluations(max_evaluations=100000))
+print("\n - increase mutation probability")
+tryTSP(myTSP, 100, 100,
+       PermutationSwapMutation(0.5, randMut=2, D=D, n=n, first=False),
+       PMXCrossover(0.3),
+       RouletteWheelSelection(beta = 0), 
+       StoppingByEvaluations(max_evaluations=100000))
 
-# sample last method
-fitnesses = np.zeros(100)
-for i in range(100):
-    r = tryTSP(myTSP, 100, 100, 
-               PermutationSwapMutation(0.5, randMut=2, D=D, n=n, first=False), 
-               PMXCrossover(0.3), 
-               RouletteWheelSelection(beta = 0), 
-               StoppingByEvaluations(max_evaluations=100000))
-    fitnesses[i] = r.objectives[0]
+# Iterate the elected method
 
-# get minimum from sample
-print(fitnesses)
-print(np.min(fitnesses))
+print("\n The next computation is lengthy, (100 implementations of the previous one)")
+YN = input("Do you want to implement it ?")
 
-# find closest neighbour path
-# remember that distance matrix is D, get its max
+if YN == "Y" :
+    fitnesses = np.zeros(100)
+    for i in range(100):
+        r = tryTSP(myTSP, 100, 100, 
+                    PermutationSwapMutation(0.5, randMut=2, D=D, n=n, first=False), 
+                    PMXCrossover(0.3), 
+                    RouletteWheelSelection(beta = 0), 
+                    StoppingByEvaluations(max_evaluations=100000))
+        fitnesses[i] = r.objectives[0]
 
-# find best neighbour
+    # get minimum from sample
+    print("\n Best fitness = ", np.min(fitnesses))
+else :
+    print("\n Understood, we pursue")
+
+#******************************************************************
+#*******************CLOSEST NEIGHBOUR PATH*************************
+#******************************************************************
+
+print("\n Closest neighbour algorithm")
+
+print("\n Find optimal path w.r.t. closest neighbour")
 (totDist, optPath, arrDist) = findGLobalOptPath(D, n)
-print(totDist, optPath, arrDist)
 bestPath = np.argmin(totDist)
-print(totDist[bestPath])
-print(optPath[bestPath])
+print("path length = ", totDist[bestPath])
 
-# find best optimized neighbour
+print("\n Find optimal path w.r.t. closest neighbour and optimize with best mutation")
 (totDist2, optPath2, arrDist1) = findGLobalOptPath(D, n, optimize=True, maxLoop=30)
-print(totDist2, optPath2)
 bestPath2 = np.argmin(totDist2)
-print(totDist2[bestPath2])
+print("path length = ", totDist2[bestPath2])
 
-# find almost best (randomize mutation) neighbour and optimize
-(totDist3, optPath3, arrDist1) = findGLobalOptPath(D, n, optimize=True, maxLoop=30)
-print(totDist3, optPath3)
-bestPath3 = np.argmin(totDist3)
-print(totDist3[bestPath3])
+input("Press enter to exit")
