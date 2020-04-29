@@ -16,6 +16,11 @@ from typing import List, TypeVar
 from jmetal.util.termination_criterion import StoppingByEvaluations
 from jmetal.operator.selection import BinaryTournamentSelection
 
+
+# *************************************************************************
+# ***********************CHANGES TO jmetalpy CLASSES***********************
+# *************************************************************************
+
 # TSP problem definition (based on jmetalpy improved to import distance matrix directly)
 class TSP2(PermutationProblem):
     """ Class representing TSP Problem personnalized. """
@@ -164,6 +169,7 @@ class PMXCrossover(Crossover[PermutationSolution, PermutationSolution]):
     
 S = TypeVar('S')
 
+# this class has been modified to look for minimization
 class RouletteWheelSelection(Selection[List[S], S]):
     """Performs roulette wheel selection.
     """
@@ -179,17 +185,20 @@ class RouletteWheelSelection(Selection[List[S], S]):
             raise Exception('The front is empty')
 
         if self.beta == 0:
-            # maximum = sum([solution.objectives[0] for solution in front]) # defaulf formula on jmetalpy
+            # default formula on jmetalpy :
+            # maximum = sum([solution.objectives[0] for solution in front]) 
+            # new :
             maximum = sum([1/solution.objectives[0] for solution in front])
         else:
-            maximum = sum([math.exp(- self.beta * solution.objectives[0]) for solution in front])
+            maximum = sum([math.exp(- self.beta * solution.objectives[0]) 
+                           for solution in front])
 
         rand = random.uniform(0.0, maximum)
         value = 0.0
 
         for solution in front:
             if self.beta == 0:
-                # value += solution.objectives[0] # defaul formula in jmetalpy
+                # value += solution.objectives[0] # default formula in jmetalpy
                 value += 1/solution.objectives[0]
             else:
                 value += math.exp(-self.beta * solution.objectives[0])
@@ -202,9 +211,12 @@ class RouletteWheelSelection(Selection[List[S], S]):
     def get_name(self) -> str:
         return 'Roulette wheel selection'
 
+# *************************************************************************
+# ***********************IMPLEMENT GENETIC ALGORITHM***********************
+# *************************************************************************
 
-
-def tryTSP(problem, population_size, offspring_population_size, mutation, crossover, selection, termination_criterion):
+def tryTSP(problem, population_size, offspring_population_size, mutation, 
+               crossover, selection, termination_criterion):
     myAlgo = so.GeneticAlgorithm(
             problem=problem,
             population_size=population_size,
@@ -225,17 +237,25 @@ def tryTSP(problem, population_size, offspring_population_size, mutation, crosso
 
     return result
 
-def findClosest(D, M, from_ind, among_ind):
-    dist = M + 1
-    neighb = from_ind
 
+# *************************************************************************
+# ******************CLOSEST NEIGHBOUR ALGORITHM****************************
+# *************************************************************************
+
+# determine the closest neighbour of a given city
+def findClosest(D, M, from_city, among_ind):
+    dist = M + 1
+    neighb = from_city
+    
+    # to be optimized with numpy !
     for i in among_ind :
-        if D[from_ind, i] < dist :
-            dist = D[from_ind, i]
+        if D[from_city, i] < dist :
+            dist = D[from_city, i]
             neighb = i
 
     return (neighb, dist)
 
+# find the optimal path (w.r.t. closest neighbour) from a given city
 def findOptPath(D, n, M, from_city = 0):
     city = from_city
     totDist = 0
@@ -245,7 +265,7 @@ def findOptPath(D, n, M, from_city = 0):
     path[0]=from_city
 
     for i in range(1, n):
-        availableCities = availableCities[availableCities != city]
+        availableCities = availableCities[ availableCities != city ]
         (neighb, dist) = findClosest(D, M, city, availableCities)
         path[i] = neighb
         arrDist[i-1] = dist
@@ -257,6 +277,8 @@ def findOptPath(D, n, M, from_city = 0):
 
     return (totDist, path, arrDist)
 
+# find the optimal path w.r.t. closest neighbour including choice of starting city
+# if optimize==True then path is optimized with best mutation
 def findGLobalOptPath(D, n, optimize = False, maxLoop=100, verbal = False, first = False):
     vecDist = np.zeros(n)
     matOptPath = np.zeros((n,n), dtype=int)
@@ -273,38 +295,7 @@ def findGLobalOptPath(D, n, optimize = False, maxLoop=100, verbal = False, first
 
     return(vecDist, matOptPath, matArrDist)
 
-
-# optimize best neighbour with best mutation (this method is too costly)
-def bestMutation(D, n, path, first=False):
-
-    refLen = pathLen(path, D, n)
-    myMin = refLen
-    test = myMin
-    mut1, mut2 = 0, 0
-    proba = 10/n
-
-    for i in range(n-1):
-        for j in range(i+1,n):
-            tmp = copy.deepcopy(path)
-            tmp[i] = path[j]
-            tmp[j] = path[i]
-            tmpInd = np.array([i-1, i, i+1, j-1, j, j+1], dtype=int)%n
-
-            test = refLen - D[path[tmpInd[0]], path[tmpInd[1]]] - D[path[tmpInd[1]], path[tmpInd[2]]] \
-                - D[path[tmpInd[3]], path[tmpInd[4]]] - D[path[tmpInd[4]], path[tmpInd[5]]] \
-                + D[tmp[tmpInd[0]], tmp[tmpInd[1]]] + D[tmp[tmpInd[1]], tmp[tmpInd[2]]] \
-                + D[tmp[tmpInd[3]], tmp[tmpInd[4]]] + D[tmp[tmpInd[4]], tmp[tmpInd[5]]] 
-
-            if  test <= myMin :
-                rand = (random.random() < proba )
-                if rand:
-                    (mut1, mut2, myMin) = (i, j, test)
-                    if first:
-                        return (mut1, mut2, myMin)
-
-    return (mut1, mut2, myMin)
-
-# optimize best neighbour with best mutation (this method is optimized with numpy arrays)
+# find best mutation to improve a path
 def bestMutation2(D, n, path, first=False):    
     refLen = pathLen(path, D, n)
     myMin = refLen
@@ -355,6 +346,7 @@ def bestMutation2(D, n, path, first=False):
 
     return (mut1, mut2, myMin)
 
+# compute the length of a given path
 def pathLen(path, D, n):
     dist = D[path[0], path[n-1]]
 
@@ -363,11 +355,12 @@ def pathLen(path, D, n):
 
     return(dist)
 
+# implement a mutation
 def mutate(path, i, j):
     path[i], path[j] = path[j], path[i]
-
     return path
 
+# implement best mutation optimization
 def optimizePath(D, n, path, verbal = True, maxLoop = 100, first=False ):
     go_on = True
     currentPath = copy.deepcopy(path)
@@ -383,7 +376,5 @@ def optimizePath(D, n, path, verbal = True, maxLoop = 100, first=False ):
             currentPath = mutate(currentPath, mut1, mut2)
 
         count += 1
-
-    print(myMin)
 
     return (currentPath, myMin)
